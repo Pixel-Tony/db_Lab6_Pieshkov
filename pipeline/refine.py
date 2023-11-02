@@ -1,4 +1,4 @@
-from ._base import *
+from ._model import *
 from .sanitize import *
 import random as r
 

@@ -1,4 +1,4 @@
-from ._base import *
+from ._model import *
 
 class PopulateQueryGenerator:
     def __init__(self, data: dict[TableNames, ModelList]) -> None:

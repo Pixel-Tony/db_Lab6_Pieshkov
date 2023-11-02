@@ -1,4 +1,4 @@
-from ._base import *
+from ._model import *
 
 class DataProcessor:
     def __init__(self, data: RowList) -> None:
