@@ -1,5 +1,5 @@
 # DB Course - Lab 3
-Practice work #3 for KPI FAM "Introduction to DB" course
+Practice work #3 for KPI FAM "Introduction to DB" course.
 
 Лабораторна робота №3 з дісципліни "Вступ до баз даних та інформаційних систем" НТУУ КПІ.
 
