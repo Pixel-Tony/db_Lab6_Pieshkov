@@ -1,7 +1,7 @@
 CREATE TABLE
     Orders (
         order_id INT NOT NULL,
-        accepted_at DATE NOT NULL,
+        accepted_at DATETIME NOT NULL,
         total_price NUMERIC(8, 2) NOT NULL,
         PRIMARY KEY (order_id)
     );

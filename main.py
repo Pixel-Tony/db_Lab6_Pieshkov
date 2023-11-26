@@ -13,7 +13,7 @@ POPULATE = PopulateQueryGenerator(DATA).process()
 with open('update_total_prices.sql', 'r') as file:
     UPDATE_TOTAL_PRICES_QUERY = file.read()
 
-content = '\n'.join(POPULATE + ['', UPDATE_TOTAL_PRICES_QUERY, ''])
+content = '\n\n'.join(POPULATE + [UPDATE_TOTAL_PRICES_QUERY])
 
 with open('populate.sql', 'w') as file:
-    file.write(content)
+    file.write(content + '\n')

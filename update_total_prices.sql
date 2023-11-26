@@ -5,7 +5,7 @@ FROM
     (
         SELECT
             order_id,
-            SUM(pizza_price) AS total_price
+            SUM(pizzas.pizza_price * orders_pizzas.quantity) AS total_price
         FROM
             orders
             NATURAL JOIN orders_pizzas

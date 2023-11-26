@@ -77,9 +77,7 @@ class PopulateQueryGenerator:
                           s_format: str,
                           models: list[dict]):
         return [
-            'INSERT INTO',
-            f'    {table} ({fields})',
-            'VALUES\n    '
+            f'INSERT INTO\n    {table} ({fields})\nVALUES\n    '
             + ',\n    '.join(f"({s_format})".format(**a) for a in models)
             + ';'
         ]
