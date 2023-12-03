@@ -8,7 +8,7 @@ except ImportError as ierr:
     quit(1)
 
 from db_config import *
-from main import queries
+from main import view_names
 
 
 def _set_edgecolor(ax: Axes, color: ColorType):
@@ -67,25 +67,29 @@ def _third(result: list[tuple[float, int]], graph_ax: Axes):
     graph_ax.set_xlabel('Кількість інгредієнтів, шт')
     graph_ax.set_ylabel('Середня ціна за піццу, $')
     graph_ax.set_ylim(0, int(max(prices) + 2))
+    graph_ax.set_xticks([*range(min(counts), max(counts) + 1)])
     graph_ax.set_title('Графік залежності ціни піцци\n'
                        'від кількості інгредієнтів')
 
 
-def main():
+def main(fname=None):
     assert DB_NAME and DB_USER and DB_PASSWORD, \
         "Неправильно введено дані з'єднання"
 
     figure, axes = plt.subplots(1, 3)
+    figure.set_size_inches(12, 6)
     handlers = (_first, _second, _third)
 
     with pg.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD) as conn:
-        for query, handler, ax in zip(queries, handlers, axes):
+        for view, handler, ax in zip(view_names, handlers, axes):
             with conn.cursor() as cur:
-                cur.execute(query)
+                cur.execute(f"SELECT * FROM {view}")
                 handler(cur.fetchall(), ax)
 
     mng = plt.get_current_fig_manager()
     mng.resize(1400, 600)
+    if fname:
+        figure.savefig(fname)
     plt.show()
 
 

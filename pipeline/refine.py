@@ -9,6 +9,9 @@ class DataExtractor:
 
     def process(self, count: int):
         MAX_ORDER_ID = int(self.rows[-1]['order_id'])
+        ROWS_LENGTH = len(self.rows)
+        count = min(count, MAX_ORDER_ID)
+
         order_indices = set()
         while len(order_indices) < count:
             order_indices.add(r.randrange(MAX_ORDER_ID))
@@ -30,11 +33,13 @@ class DataExtractor:
                 CLEANED.append({
                     **sanitize(row),
                     'order_id': ind + 1,
-                    # Somehow original dataset contains this character
                     'pizza_ingredients': row['pizza_ingredients']
+                    # Somehow original dataset contains this sequence
                     .replace(b'\xd0\xb6\xe2\x80\xa6\xe2\x80\xba'.decode(), 'N')
                 })
                 i += 1
+                if i == ROWS_LENGTH:
+                    break
                 row = self.rows[i]
                 row_id = int(row['order_id'])
 
