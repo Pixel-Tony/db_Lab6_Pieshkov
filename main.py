@@ -1,36 +1,52 @@
-with open('query.sql', 'r', encoding='UTF-8') as q_file:
-    queries = q_file.read().split(';')
-assert len(queries) == 3
+import csv
+import sys
+import psycopg2 as pg
 
-view_names = (
-    'AveragePizzaPrices',
-    'MostExpensiveOrders',
-    'Pizzas_IngredientCounts'
-)
+from util import *
+from db_config import DB_NAME, DB_PASSWORD, DB_USER
 
 
-def main(output_filename: str, skip_create=False):
-    from visualization import main as visualize
+def read_file(fname: str, encoding='utf8'):
+    with open(fname, 'r', encoding=encoding) as f:
+        return f.read()
 
-    if skip_create:
-        return visualize(output_filename)
+def main(count: int = ...):
+    if count is ...:
+        count = 9
 
-    from db_config import DB_NAME, DB_PASSWORD, DB_USER
-    import psycopg2 as pg
+    with open('data.csv') as file:
+        lines = file.readlines()
+
+    rows = [*csv.DictReader(lines)]
+
+    CLEANED_DATA = DataExtractor(rows).process(count=count)
+    DATA = DataProcessor(CLEANED_DATA).process()
+    POPULATE = PopulateQueryGenerator(DATA).process()
+
+    TOTAL_PRICES_FUNCTION = read_file('function.sql')
+    PRICE_UPDATE_PROCEDURES = read_file('procedure.sql')
+    TRIGGERS = read_file('trigger.sql')
+
+    content = '\n\n'.join(
+        [TOTAL_PRICES_FUNCTION, PRICE_UPDATE_PROCEDURES, TRIGGERS]
+        + POPULATE
+    )
+
+    with open('populate.sql', 'w', encoding='utf8') as file:
+        file.write(content)
 
     with pg.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD) as conn:
         conn.autocommit = True
-
-        for query, view_name in zip(queries, view_names):
-            with conn.cursor() as cur:
-                cur.execute(f"DROP VIEW IF EXISTS {view_name};"
-                            f"CREATE VIEW {view_name} AS {query}")
-                print(cur.statusmessage)
-
-    visualize(output_filename)
+        with conn.cursor() as cur:
+            cur.execute(content)
+            print(cur.statusmessage)
 
 
 if __name__ == '__main__':
-    from sys import argv
-    skip_create = '-v' in argv[1:]
-    main("graphs.png", skip_create)
+    argv = sys.argv[1:]
+    count = argv[0] if argv else None
+
+    if count and count.isnumeric():
+        main(int(count))
+    else:
+        main()
