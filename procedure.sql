@@ -1,3 +1,8 @@
+/**
+ * Оновлення вартості замовлення за заданим ідентифікатором.
+ *
+ * Обчислюємо нову вартість, оновлюємо відповідне поле у таблиці.
+ */
 CREATE OR REPLACE PROCEDURE update_order_total(needle ORDERS.ORDER_ID%TYPE)
 LANGUAGE PLPGSQL
 AS $$

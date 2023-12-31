@@ -1,3 +1,8 @@
+/**
+ * Оновлення вартості замовлення при додаванні до нього піцци.
+ *
+ * Для оновленого замовлення записуємо його нову вартість у базу даних.
+ */
 CREATE OR REPLACE FUNCTION tr_update_order_total() RETURNS TRIGGER
     LANGUAGE PLPGSQL
     AS $$

@@ -1,3 +1,8 @@
+/**
+ * Обчислення вартості замовлення за його ідентифікатором
+ *
+ * Знаходимо суму вартостей кожної піцци, враховуючи їх кількості у замовленні.
+ */
 CREATE OR REPLACE FUNCTION get_order_total_price(needle orders.order_id%TYPE)
 RETURNS orders.total_price%TYPE
 LANGUAGE plpgsql
